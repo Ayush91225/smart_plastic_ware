@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'dart:io';
 import 'dart:ui';
 import 'package:webview_flutter/webview_flutter.dart';
 import '../handlers/webview_handler.dart';
@@ -154,43 +153,41 @@ class _WebViewScreenState extends State<WebViewScreen> {
     final topPadding = MediaQuery.of(context).padding.top;
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: Platform.isIOS
-          ? PreferredSize(
-              preferredSize: Size.fromHeight(topPadding + 44),
-              child: ClipRect(
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
-                  child: Container(
-                    padding: EdgeInsets.only(top: topPadding),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.8),
-                      border: Border(
-                        bottom: BorderSide(
-                          color: Colors.grey.withOpacity(0.2),
-                          width: 0.5,
-                        ),
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        CupertinoButton(
-                          padding: const EdgeInsets.only(left: 8),
-                          onPressed: () async {
-                            if (await _handler.canGoBack()) {
-                              _handler.goBack();
-                            } else {
-                              await _handler.controller.loadRequest(Uri.parse(AppConstants.baseUrl));
-                            }
-                          },
-                          child: const Icon(CupertinoIcons.back, color: Colors.black),
-                        ),
-                      ],
-                    ),
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(topPadding + 44),
+        child: ClipRect(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+            child: Container(
+              padding: EdgeInsets.only(top: topPadding),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.8),
+                border: Border(
+                  bottom: BorderSide(
+                    color: Colors.grey.withOpacity(0.2),
+                    width: 0.5,
                   ),
                 ),
               ),
-            )
-          : null,
+              child: Row(
+                children: [
+                  CupertinoButton(
+                    padding: const EdgeInsets.only(left: 8),
+                    onPressed: () async {
+                      if (await _handler.canGoBack()) {
+                        _handler.goBack();
+                      } else {
+                        await _handler.controller.loadRequest(Uri.parse(AppConstants.baseUrl));
+                      }
+                    },
+                    child: const Icon(CupertinoIcons.back, color: Colors.black),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
       body: PopScope(
         canPop: false,
         onPopInvokedWithResult: (didPop, result) async {
@@ -202,12 +199,12 @@ class _WebViewScreenState extends State<WebViewScreen> {
         child: Stack(
           children: [
             Padding(
-              padding: EdgeInsets.only(top: Platform.isIOS ? topPadding + 44 : 0),
+              padding: EdgeInsets.only(top: topPadding + 44),
               child: WebViewWidget(key: _key, controller: _handler.controller),
             ),
             if (_isLoading)
               Padding(
-                padding: EdgeInsets.only(top: Platform.isIOS ? topPadding + 44 : 0),
+                padding: EdgeInsets.only(top: topPadding + 44),
                 child: Container(
                   color: Colors.white,
                   child: const ShimmerLoader(),
